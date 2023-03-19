@@ -1,0 +1,5 @@
+1. Créer nouveau fichier csv pour visualiser sur un graphe la frontière de Parento
+2. Résoudre la liste arrangement_final qui s'agrandit
+3. Rajouter les mutations dans l'algorithme de reproduction
+4. Clean le code
+5. Améliorer l'algorithme
