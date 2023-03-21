@@ -19,7 +19,7 @@ def read_csv(file):
         return liste
 
 
-def run(x, permutation):
+def calculate_finition_time(x, permutation):
     """
     xij proviennent de la liste besoins
     t est la matrice comportant les temps de finitions de chaque objet (une ligne par objet, une colonne par machine)
@@ -50,13 +50,13 @@ def weighted_tardiness(x, t):
 
 def calculate_score(individu, permutation):
     """Calcule le score de chaque individu"""
-    t = run(individu, permutation)
+    t = calculate_finition_time(individu, permutation) #Temps de finition
     weight_tard = weighted_tardiness(individu, t)
     makespan = max(max(t))
-    return 1*weight_tard+1*makespan
+    return 1*weight_tard+1*makespan #poids à choisir
 
 
-def get_all_permutations(it):
+def get_first_permutations(it):
     """ Renvoie une liste de it permutations de listes de 200 chiffres (de 0 à 199)"""
     liste = list(range(0, 200))
     ret = []
@@ -75,19 +75,22 @@ def score_of_permutations(csv_matrix, all_permutations):
     return scores
 
 
-def reproduction(scores, listes_perm):
+def reproduction(scores, permutations):
     """3eme étape"""
     childlist = []
     sorted_score = scores[:]
     sorted_score.sort()
+    print("sorted score : " ,sorted_score)
+    print("original score : ",scores)
     # index des meilleurs scores (du meilleur au pire)
     index_best_score = [scores.index(i) for i in sorted_score]
+    print("indexes best scores :",index_best_score)
     for i in index_best_score:
-        parent1 = listes_perm[i][:]  # modifier les facons de mélanger
+        parent1 = permutations[i][:]  # modifier les facons de mélanger
         if i == max(index_best_score):
-            parent2 = listes_perm[i][:]
+            parent2 = permutations[i][:]
         else:
-            parent2 = listes_perm[i+1][:]
+            parent2 = permutations[i+1][:]
         child1 = parent1[:99]
         for i in parent2:
             if i in parent1[99:]:
@@ -103,13 +106,13 @@ def reproduction(scores, listes_perm):
 
 
 def main():
-    population_number = 20  # nombre pair
+    population_number = 10  # nombre pair
     incomming_file = "instance.csv"
     csv_matrix = read_csv(incomming_file)
-    all_permutations = get_all_permutations(population_number)
-    for nb_generation in range(5): #Nombre de générations
-        score_of_population = score_of_permutations(
-            csv_matrix, all_permutations)
+    all_permutations = get_first_permutations(population_number)
+    for nb_generation in range(1): #Nombre de générations
+        score_of_population = score_of_permutations(csv_matrix, all_permutations) #Score à minimiser
+        print(score_of_population)
         all_permutations = reproduction(score_of_population, all_permutations)
         print("Génération "+str(nb_generation+1)+" terminée")
     print("Writing into csv file...")
